@@ -5,22 +5,31 @@ import java.util.ArrayList;
 class Handler implements URLHandler {
     // The one bit of state on the server: a number that will be manipulated by
     // various requests.
-    int num = 0;
+    ArrayList<String> list = new ArrayList<>();
 
     public String handleRequest(URI url) {
         if (url.getPath().equals("/")) {
-            return String.format("Number: %d", num);
-        } else if (url.getPath().equals("/increment")) {
-            num += 1;
-            return String.format("Number incremented!");
-        } else {
+            return list.toString();
+        } 
+        else {
             System.out.println("Path: " + url.getPath());
-            ArrayList<String> list = new ArrayList<>(list);
             if (url.getPath().contains("/add")) {
                 String[] parameters = url.getQuery().split("=");
                 if (parameters[0].equals("s")) {
-                    num += Integer.parseInt(parameters[1]);
-                    return String.format(list.get(num));
+                    list.add(parameters[1]);
+                    return list.toString();
+                }
+            }
+            if (url.getPath().contains("/search")) {
+                String[] parameters = url.getQuery().split("=");
+                if (parameters[0].equals("s")) {
+                    ArrayList<String> newList = new ArrayList<>();
+                    for (String s: list) {
+                        if (parameters[1].contains(s)) {
+                            newList.add(parameters[1]);
+                        }
+                    }
+                    return newList.toString();
                 }
             }
             return "404 Not Found!";
@@ -28,7 +37,7 @@ class Handler implements URLHandler {
     }
 }
 
-class NumberServer {
+class SearchEngine{
     public static void main(String[] args) throws IOException {
         if(args.length == 0){
             System.out.println("Missing port number! Try any number between 1024 to 49151");
