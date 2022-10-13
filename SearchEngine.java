@@ -25,8 +25,8 @@ class Handler implements URLHandler {
                 if (parameters[0].equals("s")) {
                     ArrayList<String> newList = new ArrayList<>();
                     for (String s: list) {
-                        if (parameters[1].contains(s)) {
-                            newList.add(parameters[1]);
+                        if (s.contains(parameters[1])) {
+                            newList.add(s);
                         }
                     }
                     return newList.toString();
